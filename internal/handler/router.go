@@ -4,11 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *gin.Engine {
-	router := gin.New()
-	healthHandler := NewHealthHandler()
+func SetupRouter(authHandler *AuthHandler) *gin.Engine {
+	r := gin.Default()
 
-	router.GET("/health", healthHandler.Health)
+	v1 := r.Group("/api/v1")
+	{
+		auth := v1.Group("/auth")
+		{
+			auth.POST("/register", authHandler.Register)
+		}
+	}
 
-	return router
+	return r
 }
